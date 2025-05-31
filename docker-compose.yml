@@ -1,0 +1,16 @@
+# Define a versão da sintaxe do Docker Compose que estamos usando.
+version: '3.8'
+
+# Define os serviços (contêineres) da nossa aplicação. Por enquanto, só temos um.
+services:
+  # Damos um nome ao nosso serviço: "web".
+  web:
+    # 'build: .' diz ao Compose para construir a imagem a partir do Dockerfile
+    # que está na pasta atual.
+    build: .
+    # 'ports' cria a "ponte" entre o seu computador e o contêiner.
+    # "5000:8000" significa:
+    # -> Pegue o tráfego que chega na porta 5000 do meu computador (localhost:5000)
+    # -> E envie para a porta 8000 DENTRO do contêiner (onde o Gunicorn está escutando).
+    ports:
+      - "5000:8000"

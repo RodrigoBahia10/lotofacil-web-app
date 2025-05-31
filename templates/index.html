@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Último Resultado da Lotofácil</title>
+    <style>
+        /* Estilos CSS para deixar a página mais bonita */
+        body { font-family: Arial, sans-serif; background-color: #f0f2f5; color: #333; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
+        .card { background-color: #fff; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); padding: 30px; text-align: center; max-width: 500px; }
+        h1 { color: #007bff; }
+        .info { font-size: 1.2em; margin: 10px 0; }
+        .dezenas { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 20px; }
+        .dezena { background-color: #28a745; color: white; border-radius: 50%; width: 45px; height: 45px; display: flex; justify-content: center; align-items: center; font-size: 1.1em; font-weight: bold; }
+        .error { color: #dc3545; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        {% if concurso and concurso.numero %}
+            <h1>Resultado da Lotofácil</h1>
+            <div class="info">
+                <strong>Concurso:</strong> {{ concurso.numero }}
+            </div>
+            <div class="info">
+                <strong>Data:</strong> {{ concurso.dataApuracao }}
+            </div>
+            
+            <div class="dezenas">
+                {% for dezena in concurso.listaDezenas %}
+                    <div class="dezena">{{ dezena }}</div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <h1>Erro ao Carregar</h1>
+            <p class="error">Não foi possível obter os dados do último resultado. Por favor, tente novamente mais tarde.</p>
+        {% endif %}
+    </div>
+</body>
+</html>
