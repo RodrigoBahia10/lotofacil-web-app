@@ -2,6 +2,25 @@
 # A tag "slim" é uma versão otimizada e mais leve.
 FROM python:3.11-slim
 
+# <<------------------ INÍCIO DAS NOVAS LINHAS PARA LOCALE ------------------>>
+# Define o frontend do debconf como não interativo para evitar prompts durante o build
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Atualiza a lista de pacotes, instala o pacote 'locales' e dependências,
+# configura o locale pt_BR.UTF-8 e limpa o cache do apt.
+RUN apt-get update && \
+    apt-get install -y locales \
+    && rm -rf /var/lib/apt/lists/* \
+    && sed -i -e 's/# pt_BR.UTF-8 UTF-8/pt_BR.UTF-8 UTF-8/' /etc/locale.gen \
+    && dpkg-reconfigure --frontend=noninteractive locales \
+    && update-locale LANG=pt_BR.UTF-8
+
+# Define as variáveis de ambiente de localização para pt_BR.UTF-8 para todo o contêiner
+ENV LANG pt_BR.UTF-8
+ENV LANGUAGE pt_BR:pt:en
+ENV LC_ALL pt_BR.UTF-8
+# <<------------------- FIM DAS NOVAS LINHAS PARA LOCALE -------------------->>
+
 # PASSO 2: Definimos o diretório de trabalho principal dentro do contêiner.
 # É como criar uma pasta e entrar nela.
 WORKDIR /app
@@ -20,5 +39,6 @@ COPY . .
 # PASSO 6: Este é o comando que será executado quando o contêiner iniciar.
 # Dizemos ao Gunicorn para iniciar e servir nossa aplicação Flask.
 # --bind 0.0.0.0:8000: Escute por requisições na porta 8000, vindo de qualquer lugar.
+# --timeout 120: Aumenta o tempo limite do worker para 120 segundos.
 # app:app: No arquivo app.py, encontre a variável 'app' (nossa instância Flask).
 CMD ["gunicorn", "--bind", "0.0.0.0:8000", "--timeout", "120", "app:app"]
